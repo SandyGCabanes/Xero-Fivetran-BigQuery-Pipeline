@@ -30,7 +30,8 @@ immediately in SQL.
 
 
 **Stack:** Xero Demo Company → Fivetran (Free) → BigQuery → dbt → SQLite  
-**Built:** May 6, 2026 | **Infrastructure cost:** $0
+**Built:** May 6, 2026 | **Infrastructure cost:** $0 <br>
+[Jump to 80 second walkthrough gif](https://github.com/SandyGCabanes/Xero-Fivetran-BigQuery-Pipeline/blob/main/assets/walkthrough_xero_bigquery_fivetran.gif)
 
 ---
 
