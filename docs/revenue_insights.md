@@ -1,7 +1,7 @@
 # Revenue Insights Report
 **Prepared by:** Sandy G. Cabanes  
 **Date:** May 6, 2026  
-**For:** [Client Name]  
+**For:** Xero Demo Company
 **Period covered:** March – May 2026  
 **Source:** Xero invoice data → BigQuery pipeline
 
