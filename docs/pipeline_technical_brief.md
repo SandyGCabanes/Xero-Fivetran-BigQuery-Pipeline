@@ -1,13 +1,13 @@
 # Xero → Fivetran → BigQuery Pipeline
 ## Technical Brief for Decision Makers
 **Prepared by:** Sandy G. Cabanes  
-**Date:** May 6, 2026
+**Date:** May 11, 2026
 
 ---
 
-## What Was Built
+## 3-Layer Data Pipeline
 
-A three-layer data pipeline that automatically moves your Xero
+A three-layer data pipeline that automatically moves Xero Demo Company
 accounting data into a cloud data warehouse, where it can be
 queried, analyzed, and connected to any reporting tool.
 
@@ -27,7 +27,7 @@ no manual intervention for routine syncs.
 
 ---
 
-## How Complex Is This to Set Up?
+## Complexity of Set-up:
 
 **Initial setup: moderate complexity, one-time effort.**
 
@@ -69,7 +69,7 @@ You do not need to manage any of this day-to-day.
 
 ---
 
-## What Are the Moving Parts?
+## Parts of the Pipeline
 
 ```
                     ┌─────────────────────────────────┐
@@ -94,6 +94,25 @@ You do not need to manage any of this day-to-day.
           └──────────────────┘    └──────────────────┘
 ```
 
+---
+**What Fivetran fully manages**
+
+When Fivetran describes itself as fully managed, it means the following tasks are handled automatically and do not require any code or intervention from your team:
+
+| Task | Without Fivetran |
+|------|-----------------|
+| OAuth token refresh | You write and maintain token refresh logic |
+| API pagination | You handle multi-page responses per endpoint |
+| Rate limit handling | You catch 429 errors and implement backoff manually.  Fivetran retries automatically up to 7 times with backoff built in. |
+| Schema drift | You write detection and migration logic.        Fivetran adds new columns automatically but soft-deletes removed columns and creates parallel columns on type changes — behavior you need to understand and account for in downstream queries.|
+| Incremental sync | You track which records were already loaded |
+| Failure alerting | Fivetran sends email alerts and logs warnings. Custom alerting, escalation, and incident response are still on you. |
+| Log visibility | You build your own logging. Fivetran exposes HTTP status codes, sync history, and warnings in the dashboard |
+| Scheduling | You configure cron jobs, Task Scheduler (Windows), launchd (Mac) or Cloud Scheduler, and handle missed runs, overlapping runs, and server restarts.  |
+
+
+---
+
 **Three datasets in BigQuery:**
 
 | Dataset | Contents | Updated by |
@@ -102,11 +121,13 @@ You do not need to manage any of this day-to-day.
 | `xero_staging` | Cleaned, standardized columns (18 tables) | dbt via Fivetran |
 | `xero_reports` | Analytics-ready joined tables | dbt via Fivetran |
 
+[**Click here for xero dbt codes in Fivetran's github repo**](https://github.com/fivetran/dbt_xero/)
+
 ---
 
 ## What Does It Cost?
 
-### Scenario: Typical MSE using Xero actively
+### Scenario: Typical Small Business using Xero actively
 
 Assumptions: ~200 invoices/month, ~500 contacts,
 ~300 bank transactions, daily sync frequency.
@@ -119,7 +140,7 @@ Free plan limit        :  500,000 MAR/month
 Plan required          :  Free ($0/month)
 Connection minimum fee :  $0 on Free plan
 
-Note: Fivetran Free plan covers most MSEs comfortably.
+Note: Fivetran Free plan covers most small businesses comfortably.
 A paid plan ($120/month+) is only needed if you
 connect 2+ high-volume sources simultaneously
 or require sub-hourly sync frequency.
@@ -132,26 +153,9 @@ Estimated monthly cost :  $0
 
 TOTAL INFRASTRUCTURE COST
 ────────────────────────────────────────────────
-Typical MSE            :  $0/month
-High-volume MSE        :  $5 - $50/month
+Typical small business    :  $0/month
+High-volume business      :  $5 - $50/month
 (multiple sources, high transaction volume)
-```
-
-### Cost comparison: pipeline vs. manual reporting
-
-```
-WITHOUT PIPELINE:
-  Staff time to export, clean, and consolidate
-  Xero reports monthly             :  4 - 8 hours/month
-  At $25-50/hour staff cost        :  $100 - $400/month
-  Error rate on manual process     :  high
-  Cross-invoice analysis           :  not possible
-
-WITH PIPELINE:
-  Infrastructure                   :  $0/month
-  Sync runs automatically          :  0 hours/month
-  Error rate                       :  near zero
-  Cross-invoice analysis           :  immediate
 ```
 
 ---
@@ -163,7 +167,7 @@ Fivetran's pricing has changed twice in 2025-2026. Here is
 the risk mitigation:
 
 **Option 1 — Stay on Free plan**
-At typical MSE volumes, the Free plan is unlikely to be
+At typical small business volumes, the Free plan is unlikely to be
 discontinued. Fivetran uses it as a market entry product.
 Risk: low.
 
