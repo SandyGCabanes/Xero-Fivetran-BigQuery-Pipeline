@@ -2,8 +2,9 @@
 ### Small Business Data Pipeline | Sandy G. Cabanes
 
 > Infrastructure cost: $0  
-> $12,375 in miscategorized revenue identified. 27% data quality gap confirmed.  
-> Built entirely on free-tier tools.
+> $12,375 in miscategorized revenue identified.<br>
+> 62% data quality gap revealed.  
+> Built entirely on free-tier tools.<br>
 > Replicates extraction from accounting software (Xero), using ELT tool Fivetran, querying loaded gold table in BigQuery, local sqlite query for downloaded table, and Data Studio in GCP for the dashboard
 
 
@@ -15,7 +16,7 @@ The pipeline runs automatically, requires no ongoing maintenance for
 routine operations, and costs $0/month at typical small business
 data volumes.
 
-The first sync took 50 seconds. The first audit query found a 27%
+The first sync took 50 seconds. The first audit query found a 62%
 data quality gap and $12,375 in revenue that was unclassified in
 any service-level report — invisible in Xero's UI, visible
 immediately in SQL.
@@ -113,7 +114,7 @@ Loss of the largest single client eliminates almost half of revenue. The rest of
 
 ### Data Quality Gaps
 
-24% of line items have at least one missing field — either no service code, no region tag, or both. This includes $12,375 attributed to the largest client, which appears as "Unclassified" in any service-level report.
+62% of line items have at least one missing field — either no service code, no region tag, or both. This includes $12,375 attributed to the largest client, which appears as "Unclassified" in any service-level report.
 
 → [Full revenue analysis with SQL queries](docs/revenue_insights.md)  
 → [Full data quality findings and action checklist](docs/data_quality_findings.md)
