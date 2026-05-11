@@ -1,9 +1,10 @@
 # Xero → Fivetran → BigQuery
-### A Zero-Budget MSE Data Pipeline | Sandy G. Cabanes
+### Small Business Data Pipeline | Sandy G. Cabanes
 
 > Infrastructure cost: $0  
 > $12,375 in miscategorized revenue identified. 27% data quality gap confirmed.  
 > Built entirely on free-tier tools.
+> Replicates extraction from accounting software (Xero), using ELT tool Fivetran, querying loaded gold table in BigQuery, and local sqlite query for downloaded table.
 
 ---
 
@@ -11,7 +12,7 @@
 
 1. [Problem](#1-problem)
 2. [Solution](#2-solution)
-3. [What This Found](#3-what-this-found)
+3. [Findings](#3-findings)
 4. [Applicability](#4-applicability)
 5. [How It Works](#5-how-it-works)
 6. [Revenue Analysis](#6-revenue-analysis)
@@ -20,11 +21,14 @@
 9. [Open Questions](#9-open-questions)
 10. [Relevant Documents](#10-relevant-documents)
 
+
 ---
 
 ## 1. Problem
 
-Xero's built-in reports answer one question at a time: one invoice, one client, one period. Questions that matter to a growing business — which clients drive the most revenue, which services are most profitable, whether regional performance is improving — require data from across multiple invoices, clients, and time periods simultaneously.
+Xero is designed for accounting. It handles invoicing, reconciliation, and financial reporting well. What it is not designed for is open-ended analysis across all your records at once. 
+
+Questions that matter to a growing business — which clients drive the most revenue, which services are most profitable, whether regional performance is improving — require data from across multiple invoices, clients, and time periods simultaneously.
 
 The standard workaround is manual: export CSVs from Xero, consolidate in a spreadsheet, and rebuild the analysis each reporting period. The process is time-consuming, and error-prone.
 
@@ -38,9 +42,9 @@ A data pipeline that moves Xero accounting data into Google BigQuery automatical
 
 Once configured, the pipeline runs on a schedule with no manual intervention. New invoices appear in BigQuery automatically. Analysis is a SQL query against a live dataset, not a monthly spreadsheet exercise.
 
-**Infrastructure cost at typical MSE data volumes: $0/month.**
+**Infrastructure cost at typical small business data volumes: $0/month.**
 
-### The Stack
+### Tech Stack
 
 | Layer | Tool | Cost |
 |-------|------|------|
@@ -50,7 +54,7 @@ Once configured, the pipeline runs on a schedule with no manual intervention. Ne
 | Transformation | dbt via Fivetran Quickstart | $0 |
 | Local analysis | SQLite + DB Browser | $0 |
 
-**Why Fivetran over alternatives:** Several tools connect Xero to BigQuery — Airbyte, Stitch, CData, and PyAirbyte among them. Fivetran was selected because the free tier covers MSE data volumes, the dbt transformation layer is included at no extra cost, and the setup is fully managed with no server required. At higher data volumes or with multiple sources, Airbyte self-hosted is the lower-cost path.
+**Why Fivetran over alternatives:** Several tools connect Xero to BigQuery — Airbyte, Stitch, CData, and PyAirbyte among them. Fivetran was selected because the free tier covers typical small business data volumes, the dbt transformation layer is included at no extra cost, and the setup is fully managed with no server required. At higher data volumes or with multiple sources, Airbyte self-hosted is the lower-cost path.
 
 **A note on orchestration tools:** Apache Airflow and Luigi can orchestrate data ingestion through custom-coded workflows, but require you to build and maintain the source-system connectivity yourself — handling API pagination, rate limits, schema changes, and OAuth token refresh. Fivetran handles all of this out of the box. At this scale, a separate orchestration layer adds engineering overhead without adding capability.
 
@@ -58,7 +62,7 @@ Once configured, the pipeline runs on a schedule with no manual intervention. Ne
 
 ---
 
-## 3. What This Found
+## 3. Findings
 
 Two categories of findings emerged from the first sync.
 
@@ -91,11 +95,18 @@ These gaps were not visible in Xero's UI without opening individual invoices. A 
 | CRM Projects visible in reports | $0 | $12,375 |
 | Unassigned regional revenue | $8,522 | ~$1,000 |
 
-→ [Full revenue analysis with SQL queries](docs/revenue_insights_with_sql_code.md)  
+→ [Full revenue analysis with SQL queries](docs/revenue_insights.md)  
 → [Full data quality findings and action checklist](docs/data_quality_findings.md)
 
+**Schema and dbt**
 
 The full schema — all tables, columns, and foreign key relationships across all Xero organization types — is documented in the [Fivetran Xero ERD.]( https://fivetran.com/connector-erd/xero) Tables that did not sync in this deployment reflect org-type and OAuth scope constraints, not gaps in the connector itself.
+
+* Gold layer produced by: fivetran/dbt_xero (open source)
+* Package version: 0.9.0
+* Model produced: xero__invoice_line_items
+* Reason other models skipped: journal and journal_line
+tables unavailable due to Xero Demo Company Global API scope change (post April 29, 2026)
 
 ---
 
@@ -159,7 +170,7 @@ CRM project management generates $12,375 — the highest revenue of any service 
 
 **Action:** Set Region as required in Xero Tracking Categories. Apply default regions to recurring invoice templates.
 
-
+→ [Full SQL queries and output tables](docs/revenue_insights.md)
 
 ---
 
@@ -205,7 +216,7 @@ WHERE account_type = 'REVENUE'
 
 Target: both percentages trend toward 0% over 90 days.
 
-
+→ [Full audit with affected invoice numbers](docs/data_quality_findings.md)
 
 ---
 
@@ -213,7 +224,7 @@ Target: both percentages trend toward 0% over 90 days.
 
 ### Infrastructure Cost
 
-Fivetran's free tier supports up to 500,000 monthly active rows — well above typical MSE data volumes. BigQuery's free tier covers storage under 10GB and queries under 1TB/month. Total infrastructure cost at this scale is $0/month. Costs scale with data volume and number of connected sources.
+Fivetran's free tier supports up to 500,000 MAR or monthly active rows — well above typical small business data volumes. BigQuery's free tier covers storage under 10GB and queries under 1TB/month. Total infrastructure cost at this scale is $0/month. Costs scale with data volume and number of connected sources.
 
 ---
 
@@ -244,10 +255,17 @@ These questions are answerable with additional connectors following the same pip
 
 | Query | File |
 |-------|------|
-| Revenue by customer | [queries/revenue_by_customer.sql](queries/sqlite_revenue_by_customer.sql) |
-| Revenue by service type | [queries/revenue_by_service.sql](queries/sqlite_revenue_by_service.sql) |
-| Revenue by region | [queries/revenue_by_region.sql](queries/sqlite_revenue_by_region.sql) |
-| Data quality audit | [queries/data_quality_flags.sql](queries/sqlite_data_quality.sql) |
+| Revenue by customer | [queries/revenue_by_customer.sql](queries/revenue_by_customer.sql) |
+| Revenue by service type | [queries/revenue_by_service.sql](queries/revenue_by_service.sql) |
+| Revenue by region | [queries/revenue_by_region.sql](queries/revenue_by_region.sql) |
+| Data quality audit | [queries/data_quality_flags.sql](queries/data_quality_flags.sql) |
+
+### Raw Query Outputs
+
+| Output | File |
+|--------|------|
+| Revenue by customer | [outputs/revenue_by_customer.csv](outputs/revenue_by_customer.csv) |
+| Revenue by service | [outputs/revenue_by_service.csv](outputs/revenue_by_service.csv) |
 
 ---
 
