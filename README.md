@@ -4,7 +4,7 @@
 > Infrastructure cost: $0  
 > $12,375 in miscategorized revenue identified. 27% data quality gap confirmed.  
 > Built entirely on free-tier tools.
-> Replicates extraction from accounting software (Xero), using ELT tool Fivetran, querying loaded gold table in BigQuery, and local sqlite query for downloaded table.
+> Replicates extraction from accounting software (Xero), using ELT tool Fivetran, querying loaded gold table in BigQuery, local sqlite query for downloaded table, and Data Studio for the dashboard.
 
 
 ## Executive Summary: 
