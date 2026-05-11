@@ -6,6 +6,31 @@
 > Built entirely on free-tier tools.
 > Replicates extraction from accounting software (Xero), using ELT tool Fivetran, querying loaded gold table in BigQuery, and local sqlite query for downloaded table.
 
+
+## Executive Summary: 
+
+This repo documents a working ELT pipeline built on free-tier tools,
+connecting Xero accounting data to Google BigQuery via Fivetran.
+The pipeline runs automatically, requires no ongoing maintenance for
+routine operations, and costs $0/month at typical small business
+data volumes.
+
+The first sync took 50 seconds. The first audit query found a 27%
+data quality gap and $12,375 in revenue that was unclassified in
+any service-level report — invisible in Xero's UI, visible
+immediately in SQL.
+
+**What this repo contains:**
+- Pipeline architecture and build documentation
+- Revenue analysis across three dimensions (client, service, region)
+- Data quality audit with business recommendations
+- SQL query library with output CSVs
+- Looker Studio dashboard directly connected to BigQuery
+
+
+**Stack:** Xero Demo Company → Fivetran (Free) → BigQuery → dbt → SQLite  
+**Built:** May 6, 2026 | **Infrastructure cost:** $0
+
 ---
 
 ## Table of Contents
@@ -34,6 +59,8 @@ The standard workaround is manual: export CSVs from Xero, consolidate in a sprea
 
 There is a second, less visible problem: Xero does not flag its own data quality gaps. Missing service codes and unassigned region tags appear as blank fields in individual invoices — easy to miss in the UI, impossible to quantify without querying across all records at once. By the time a business notices, months of revenue have been misclassified.
 
+[Back to Table of Contents](#table-of-contents)
+
 ---
 
 ## 2. Solution
@@ -60,6 +87,8 @@ Once configured, the pipeline runs on a schedule with no manual intervention. Ne
 
 → [Full technical architecture and build steps](docs/pipeline_technical_brief.md)
 
+[Back to Table of Contents](#table-of-contents)
+
 ---
 
 ## 3. Findings
@@ -68,45 +97,28 @@ Two categories of findings emerged from the first sync.
 
 ### Revenue Concentration
 
-The top 3 clients generate 59% of total revenue. This concentration is invisible in Xero's standard reports — it only becomes visible when revenue is aggregated across all invoices simultaneously.
+| Client | Revenue | % of Revenue |
+|--------|---------|--------------|
+| Ridgeway University | $12,375 | 47.3% |
+| Hamilton Smith Ltd | $2,050 | 7.8% |
+| Rex Media Group | $1,550 | 5.9% |
+| Boom FM | $1,500 | 5.7% |
+| Petrie McLoud Watson & Associates | $1,300 | 5.0% |
+| Bank West | $1,200 | 4.6% |
+| City Limousines | $1,120 | 4.3% |
+| 7 other clients | $5,077 | 19.4% |
 
-| Client | Revenue | % of Total |
-|--------|---------|------------|
-| Ridgeway University | $12,375 | 33% |
-| Truxton Property Management | $5,906 | 16% |
-| Hoyt Productions | $5,500 | 15% |
-| SMART Agency | $4,500 | 12% |
-| PC Complete | $4,024 | 11% |
-| 25 other clients | $5,138 | 14% |
 
-Loss of the largest single client eliminates one-third of revenue. The bottom 25 clients collectively generate less than the top client alone.
+Loss of the largest single client eliminates almost half of revenue. The rest of the clients collectively generate less than the top client alone.
 
 ### Data Quality Gaps
 
-27% of revenue line items have at least one missing field — either no service code, no region tag, or both. This includes $12,375 attributed to the largest client, which appears as "Unclassified" in any service-level report.
-
-These gaps were not visible in Xero's UI without opening individual invoices. A single query across the warehouse surfaced all of them in seconds.
-
-**Revenue impact of fixing the gaps:**
-
-| | Before Fixes | After Fixes |
-|--|-------------|-------------|
-| Unclassified revenue | $21,468 (57%) | ~$1,150 (3%) |
-| CRM Projects visible in reports | $0 | $12,375 |
-| Unassigned regional revenue | $8,522 | ~$1,000 |
+24% of line items have at least one missing field — either no service code, no region tag, or both. This includes $12,375 attributed to the largest client, which appears as "Unclassified" in any service-level report.
 
 → [Full revenue analysis with SQL queries](docs/revenue_insights.md)  
 → [Full data quality findings and action checklist](docs/data_quality_findings.md)
 
-**Schema and dbt**
-
-The full schema — all tables, columns, and foreign key relationships across all Xero organization types — is documented in the [Fivetran Xero ERD.]( https://fivetran.com/connector-erd/xero) Tables that did not sync in this deployment reflect org-type and OAuth scope constraints, not gaps in the connector itself.
-
-* Gold layer produced by: fivetran/dbt_xero (open source)
-* Package version: 0.9.0
-* Model produced: xero__invoice_line_items
-* Reason other models skipped: journal and journal_line
-tables unavailable due to Xero Demo Company Global API scope change (post April 29, 2026)
+[Back to Table of Contents](#table-of-contents)
 
 ---
 
@@ -114,23 +126,22 @@ tables unavailable due to Xero Demo Company Global API scope change (post April 
 
 This pipeline applies to any business running on Xero — or similar cloud accounting software — where monthly reporting still depends on manual CSV exports, spreadsheet consolidation, or built-in reports that cannot answer cross-invoice questions.
 
-The specific problems it addresses:
+The specific problems it will solve:
 
-- Revenue is being miscategorized or left unclassified because invoices are entered manually rather than from a product catalogue
-- Regional or segment performance cannot be reported reliably because tracking fields are inconsistently applied
-- Cross-client, cross-period analysis requires staff time every month instead of a query
+- Categorizing revenue correctly
+- Ability to segment revenue by region or service id
+- Cross-client, cross-period analysis 
 
-The pipeline manages its own schedule and runs automatically after setup. Maintenance requires intermediate SQL — no dedicated data engineering resource needed. All infrastructure lives in the client's own accounts with no vendor lock-in.
+The pipeline manages its own schedule and runs automatically after setup. 
+This pipeline is designed for analytical queries across historical data — revenue trends, client mix, service performance — not for real-time workflow automation.
 
-The same pattern — source system to Fivetran to BigQuery — applies beyond accounting data. CRM systems, support ticket platforms, and any operational tool with an API can follow the same architecture. 
-
-This is not a substitute for tools like Zapier or Make.com, which automate individual actions between apps. This pipeline is designed for analytical queries across historical data — revenue trends, client mix, service performance — not for real-time workflow automation.
+[Back to Table of Contents](#table-of-contents)
 
 ---
 
 ## 5. How It Works
 
-The pipeline connects Xero, Fivetran, and BigQuery through a one-time setup of approximately half a day. After setup, no ongoing management is required for routine operations.  [Click here for Fivetran's github repo on its xero dbt transformations.](https://github.com/fivetran/dbt_xero)
+The pipeline connects Xero, Fivetran, and BigQuery through a one-time setup. After setup, no ongoing management is required for routine operations.  [Click here for Fivetran's github repo on its xero dbt transformations.](https://github.com/fivetran/dbt_xero)
 
 Three datasets land in BigQuery automatically:
 
@@ -144,62 +155,59 @@ The reporting table — `xero__invoice_line_items` — joins invoice headers, li
 
 **Known constraint:** Xero moved to granular OAuth scopes after April 29, 2026. Apps created after this date cannot access journal endpoints. General ledger, P&L, and balance sheet models were therefore unavailable for this build. This is a Xero platform change, not a configuration error. Invoice-based analysis — which covers revenue, data quality, and client analytics — was unaffected.
 
-→ [Full build steps, IAM configuration, and OAuth setup](docs/pipeline_technical_brief.md)
+**Schema and dbt**
+
+The full schema — all tables, columns, and foreign key relationships across all Xero organization types — is documented in the [Fivetran Xero ERD.]( https://fivetran.com/connector-erd/xero) Tables that did not sync in this deployment reflect org-type and OAuth scope constraints, not gaps in the connector itself.
+
+* Gold layer produced by: fivetran/dbt_xero (open source)
+* Package version: 0.9.0
+* Model produced: xero__invoice_line_items
+* Reason other models skipped: journal and journal_line
+tables unavailable due to Xero Demo Company Global API scope change (post April 29, 2026)
+
+
+[Full build steps, IAM configuration, and OAuth setup](docs/pipeline_technical_brief.md
+
+[Process Walkthrough One Minute Gif](https://github.com/SandyGCabanes/Xero-Fivetran-BigQuery-Pipeline/blob/main/assets/walkthrough_xero_bigquery_fivetran.gif)
+
+[Back to Table of Contents](#table-of-contents)
 
 ---
 
 ## 6. Revenue Analysis
 
-All analysis filtered to `account_type = 'REVENUE'`, excluding pass-through expenses, hardware, and rent billed through invoices.
-
 ### Finding 1 — Revenue Is Heavily Concentrated in Three Clients
-
-The top 3 clients generate 59% of revenue. This is a structural risk — not a performance finding — and is only visible through cross-invoice aggregation.
 
 **Action:** Protect top-tier relationships proactively. Direct growth efforts toward mid-tier clients (ranks 6–15) before pursuing new client acquisition.
 
 ### Finding 2 — CRM Projects Are the Highest-Value Service Line
 
-CRM project management generates $12,375 — the highest revenue of any service — but is treated as ad hoc work with no standard pricing and no active promotion to existing clients.
-
 **Action:** Formalize CRM project management as a named service. Use the recurring support base ($5,600/month) as the operational floor while growing project revenue.
 
-### Finding 3 — Regional Revenue Picture Is Incomplete
-
-11 clients worth $8,522 have no region assigned. Territory and resourcing decisions are unreliable until tagging is corrected.
-
-**Action:** Set Region as required in Xero Tracking Categories. Apply default regions to recurring invoice templates.
-
 → [Full SQL queries and output tables](docs/revenue_insights.md)
+
+[Back to Table of Contents](#table-of-contents)
 
 ---
 
 ## 7. Data Quality Findings
 
-A single audit query across all 77 revenue line items surfaced the following:
+A single audit query across all 34 revenue line items surfaced the following:
 
-### Issue 1 — Largest Client Has No Service Code
-**Severity: HIGH | Financial impact: $12,375**
-
-Ridgeway University was invoiced manually across two invoices with no item code selected. $12,375 is invisible to any catalogue-based service report.
-
+**Issue 1** — Largest Client Has No Service Code (Financial impact: $12,375<br>
 **Action:** Create item code `CRM-PROJ`. Apply retroactively to INV-0009 and INV-0025.  
-**Measure of success:** No unclassified revenue above $1,000.
+**Suggested KPI** No unclassified revenue above $1,000.
 
-### Issue 2 — Recurring Support Invoices Missing Region
-**Severity: HIGH | Affected records: 17 line items**
-
-Five recurring clients have no region assigned across both March and April — a systematic template gap, not a one-off error.
-
+**Issue 2** — Recurring Support Invoices Missing Region(Affected records: 17 line items)<br>
 **Action:** Set Region as required in Tracking Categories. Update recurring invoice template with default region per client.  
-**Measure of success:** Unassigned regional revenue below 5% within 90 days.
+**Suggested KPI:** Unassigned regional revenue below 5% within 90 days.
 
-### Issue 3 — Two Small Invoices Unclassified
-**Severity: LOW | Financial impact: $841**
-
+**Issue 3** — Two Small Invoices Unclassified (Financial impact: $841)<br>
 **Action:** Create item codes `CONSULT` and `MKTG-MAT`. Apply going forward.
 
-### Recommended Weekly Monitoring Query
+**Recommended Weekly Monitoring Query for KPIs** <br>
+Tracking Missing Item Code, Missing Region
+
 
 ```sql
 SELECT
@@ -217,6 +225,8 @@ WHERE account_type = 'REVENUE'
 Target: both percentages trend toward 0% over 90 days.
 
 → [Full audit with affected invoice numbers](docs/data_quality_findings.md)
+
+[Back to Table of Contents](#table-of-contents)
 
 ---
 
@@ -240,6 +250,7 @@ These questions are answerable with additional connectors following the same pip
 | Which service has the best margin? | Xero bills/expenses pipeline |
 | How does performance compare to industry? | External benchmark data |
 
+[Back to Table of Contents](#table-of-contents)
 
 ---
 
@@ -251,25 +262,25 @@ These questions are answerable with additional connectors following the same pip
 | [Revenue Insights](docs/revenue_insights.md) | Full analysis with SQL queries and output tables |
 | [Data Quality Findings](docs/data_quality_findings.md) | Full audit, affected records, action checklist |
 
-### Query Library (Includes /** query outputs **/ in sql file)
+### Query Library (Includes query outputs as /**/ in sql file)
 
 | Query | File |
 |-------|------|
-| Revenue by customer | [queries/revenue_by_customer.sql](queries/revenue_by_customer.sql) |
-| Revenue by service type | [queries/revenue_by_service.sql](queries/revenue_by_service.sql) |
-| Revenue by region | [queries/revenue_by_region.sql](queries/revenue_by_region.sql) |
-| Data quality audit | [queries/data_quality_flags.sql](queries/data_quality_flags.sql) |
+| Revenue by customer | [queries/revenue_by_customer.sql](queries/sqlite_revenue_by_customer.sql) |
+| Revenue by service type | [queries/revenue_by_service.sql](queries/sqlite_service_code_fix.sql) |
+| Revenue by region | [queries/revenue_by_region.sql](queries/sqlite_revenue_by_region.sql) |
+| Data quality audit | [queries/data_quality_flags.sql](queries/sqlite_data_quality.sql) |
 
 [**Data Studio Dashboard Directly Connected to Big Query**](https://github.com/SandyGCabanes/Xero-Fivetran-BigQuery-Pipeline/blob/main/assets/Dashboard_Xero_Demo_Company_(BQ_connection).pdf)
 
-
+> *Note: Google renamed Looker Studio back to Data Studio 
+in April 2026. Both names refer to the same product. 
+This repo uses the current name: Data Studio.*
 
 ---
 
 **Sandy G. Cabanes**  
 Freelance Data Analyst and Pipeline Developer | Philippines
-
-Specializes in data pipelines and analytical reporting for medium-scale enterprises — from raw source data through to business insights that inform real decisions. Works with open-source and free-tier tools to keep infrastructure costs low without sacrificing quality or reliability.
 
 - GitHub: [SandyGCabanes](https://github.com/SandyGCabanes)
 - LinkedIn: [linkedin.com/in/sandygcabanes](https://linkedin.com/in/sandygcabanes)
