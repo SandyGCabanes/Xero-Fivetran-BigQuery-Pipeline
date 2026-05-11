@@ -6,7 +6,7 @@ SELECT
   CASE WHEN item_code IS NULL THEN '⚠ No item code' END AS flag_item,
   CASE WHEN region IS NULL THEN '⚠ No region' END AS flag_region,
   line_amount
-FROM invoice_line_items
+FROM xero_invoice_line_items
 WHERE account_type = 'REVENUE'
   AND (item_code IS NULL OR region IS NULL)
 ORDER BY invoice_date DESC
