@@ -130,7 +130,7 @@ This is not a substitute for tools like Zapier or Make.com, which automate indiv
 
 ## 5. How It Works
 
-The pipeline connects Xero, Fivetran, and BigQuery through a one-time setup of approximately half a day. After setup, no ongoing management is required for routine operations.
+The pipeline connects Xero, Fivetran, and BigQuery through a one-time setup of approximately half a day. After setup, no ongoing management is required for routine operations.  [Click here for Fivetran's github repo on its xero dbt transformations.](https://github.com/fivetran/dbt_xero)
 
 Three datasets land in BigQuery automatically:
 
@@ -251,7 +251,7 @@ These questions are answerable with additional connectors following the same pip
 | [Revenue Insights](docs/revenue_insights.md) | Full analysis with SQL queries and output tables |
 | [Data Quality Findings](docs/data_quality_findings.md) | Full audit, affected records, action checklist |
 
-### Query Library
+### Query Library (Includes /** query outputs **/ in sql file)
 
 | Query | File |
 |-------|------|
@@ -260,12 +260,9 @@ These questions are answerable with additional connectors following the same pip
 | Revenue by region | [queries/revenue_by_region.sql](queries/revenue_by_region.sql) |
 | Data quality audit | [queries/data_quality_flags.sql](queries/data_quality_flags.sql) |
 
-### Raw Query Outputs
+[**Data Studio Dashboard Directly Connected to Big Query**](https://github.com/SandyGCabanes/Xero-Fivetran-BigQuery-Pipeline/blob/main/assets/Dashboard_Xero_Demo_Company_(BQ_connection).pdf)
 
-| Output | File |
-|--------|------|
-| Revenue by customer | [outputs/revenue_by_customer.csv](outputs/revenue_by_customer.csv) |
-| Revenue by service | [outputs/revenue_by_service.csv](outputs/revenue_by_service.csv) |
+
 
 ---
 
