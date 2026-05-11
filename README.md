@@ -4,7 +4,7 @@
 > Infrastructure cost: $0  
 > $12,375 in miscategorized revenue identified. 27% data quality gap confirmed.  
 > Built entirely on free-tier tools.
-> Replicates extraction from accounting software (Xero), using ELT tool Fivetran, querying loaded gold table in BigQuery, local sqlite query for downloaded table, and Data Studio for the dashboard.
+> Replicates extraction from accounting software (Xero), using ELT tool Fivetran, querying loaded gold table in BigQuery, local sqlite query for downloaded table, and Data Studio in GCP for the dashboard
 
 
 ## Executive Summary: 
@@ -166,9 +166,9 @@ The full schema — all tables, columns, and foreign key relationships across al
 tables unavailable due to Xero Demo Company Global API scope change (post April 29, 2026)
 
 
-[Full build steps, IAM configuration, and OAuth setup](docs/pipeline_technical_brief.md
+[Full build steps, IAM configuration, and OAuth setup](docs/pipeline_technical_brief.md)
 
-[Process Walkthrough One Minute Gif](https://github.com/SandyGCabanes/Xero-Fivetran-BigQuery-Pipeline/blob/main/assets/walkthrough_xero_bigquery_fivetran.gif)
+[Process Walkthrough 80 second gif](https://github.com/SandyGCabanes/Xero-Fivetran-BigQuery-Pipeline/blob/main/assets/walkthrough_xero_bigquery_fivetran.gif)
 
 [Back to Table of Contents](#table-of-contents)
 
