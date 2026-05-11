@@ -29,7 +29,7 @@ immediately in SQL.
 - Looker Studio dashboard directly connected to BigQuery
 
 
-**Stack:** Xero Demo Company → Fivetran (Free) → BigQuery → dbt → SQLite  
+**Stack:** Xero Demo Company → Fivetran (Free) dbt → BigQuery → SQlite → Data Studio <br>
 **Built:** May 6, 2026 | **Infrastructure cost:** $0 <br>
 [Jump to 80 second walkthrough gif](https://github.com/SandyGCabanes/Xero-Fivetran-BigQuery-Pipeline/blob/main/assets/walkthrough_xero_bigquery_fivetran.gif)
 
@@ -287,8 +287,4 @@ Freelance Data Analyst and Pipeline Developer | Philippines
 - GitHub: [SandyGCabanes](https://github.com/SandyGCabanes)
 - LinkedIn: [linkedin.com/in/sandygcabanes](https://linkedin.com/in/sandygcabanes)
 
----
-
-*Pipeline built: May 6, 2026*  
-*Stack: Xero → Fivetran (Free) → BigQuery (GCP) → dbt → SQLite*  
 
