@@ -89,8 +89,8 @@ You do not need to manage any of this day-to-day.
                     │
                     ▼
           ┌──────────────────┐    ┌──────────────────┐
-          │  TABLEAU /       │    │  CUSTOM SQL /    │
-          │  LOOKER STUDIO   │    │  DATA EXPORTS    │
+          │  DATA STUDIO     │    │  CUSTOM SQL /    │
+          │ (LOOKER STUDIO)  │    │  DATA EXPORTS    │
           └──────────────────┘    └──────────────────┘
 ```
 
