@@ -1,6 +1,6 @@
 ## Data Quality Findings
 
-A data quality audit query was run across all 77 revenue line items
+A data quality audit query was run across all 34 revenue line items
 to flag missing service codes and region tags:
 
 ```sql
@@ -17,14 +17,14 @@ WHERE account_type = 'REVENUE'
 ORDER BY invoice_date DESC
 ```
 
-**Result: 21 of 77 revenue lines (27%) have at least one missing field.**
+**Result: 21 of 34 revenue lines (62%) have at least one missing field.**
 
 ---
 
 ### Issue 1 — Largest Client Has No Service Code
 **Severity: HIGH | Impact: $12,375**
 
-Ridgeway University — 33% of total revenue — was invoiced across
+Ridgeway University — 47% of total revenue — was invoiced across
 two invoices with no item code. The line item description was typed
 manually instead of selecting from the product catalogue.
 
@@ -35,7 +35,7 @@ catalogue-based analysis.
 **Fix:** Create item code `CRM-PROJ` in Xero Products & Services.
 Update INV-0009 and INV-0025 retroactively.
 
-**Picture of Success:** CRM project revenue appears as a named
+**Suggested KPI:** CRM project revenue appears as a named
 service in all reports, not as blank.
 
 ---
@@ -56,7 +56,7 @@ Rex Media Group, DIISR - Small Business Services.
 2. Update recurring support invoice template with default
    region per client
 
-**Picture of Success:** Regional revenue report shows less than
+**Suggested KPI:** Regional revenue report shows less than
 5% of revenue as Unassigned.
 
 ---
@@ -71,15 +71,6 @@ guides (Marine Systems, $396).
 **Fix:** Create item codes `CONSULT` and `MKTG-MAT`.
 Apply to these two invoices and use going forward.
 
----
-
-### Revenue Impact of Fixes
-
-| | Before Fixes | After Fixes |
-|--|-------------|-------------|
-| Unclassified revenue | $21,468 (57%) | ~$1,150 (3%) |
-| CRM Projects visible | $0 | $12,375 |
-| Unassigned regional revenue | $8,522 | ~$1,000 |
 
 ---
 
