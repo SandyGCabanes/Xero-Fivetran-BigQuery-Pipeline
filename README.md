@@ -1,4 +1,4 @@
-# Xero → Fivetran → BigQuery
+# Xero - Fivetran - BigQuery - Data Studio End-to-End Pipeline
 ### Small Business Data Pipeline | Sandy G. Cabanes
 
 > Infrastructure cost: $0  
@@ -31,7 +31,7 @@ immediately in SQL.
 
 **Stack:** Xero Demo Company → Fivetran (Free) dbt → BigQuery → SQlite → Data Studio <br>
 **Built:** May 6, 2026 | **Infrastructure cost:** $0 <br>
-[Jump to 80 second walkthrough gif](https://github.com/SandyGCabanes/Xero-Fivetran-BigQuery-Pipeline/blob/main/assets/walkthrough_xero_bigquery_fivetran.gif)
+[Jump to 80 second walkthrough gif](assets/walkthrough_xero_bigquery_fivetran.gif)
 
 ---
 
@@ -46,7 +46,7 @@ immediately in SQL.
 7. [Data Quality Findings](#7-data-quality-findings)
 8. [Cost and Maintenance](#8-cost-and-maintenance)
 9. [Open Questions](#9-open-questions)
-10. [Relevant Documents](#10-relevant-documents)
+10. [Relevant Documents List](#10-relevant-documents-list)
 
 
 ---
@@ -117,7 +117,7 @@ Loss of the largest single client eliminates almost half of revenue. The rest of
 
 62% of line items have at least one missing field — either no service code, no region tag, or both. This includes $12,375 attributed to the largest client, which appears as "Unclassified" in any service-level report.
 
-→ [Full revenue analysis with SQL queries](docs/revenue_insights.md)  
+→ [Full revenue analysis with SQL queries](docs/revenue_insights_with_sql_code.md)  
 → [Full data quality findings and action checklist](docs/data_quality_findings.md)
 
 [Back to Table of Contents](#table-of-contents)
@@ -186,8 +186,6 @@ tables unavailable due to Xero Demo Company Global API scope change (post April 
 
 **Action:** Formalize CRM project management as a named service. Use the recurring support base ($5,600/month) as the operational floor while growing project revenue.
 
-→ [Full SQL queries and output tables](docs/revenue_insights.md)
-
 [Back to Table of Contents](#table-of-contents)
 
 ---
@@ -226,8 +224,6 @@ WHERE account_type = 'REVENUE'
 
 Target: both percentages trend toward 0% over 90 days.
 
-→ [Full audit with affected invoice numbers](docs/data_quality_findings.md)
-
 [Back to Table of Contents](#table-of-contents)
 
 ---
@@ -256,12 +252,12 @@ These questions are answerable with additional connectors following the same pip
 
 ---
 
-## 10. Relevant Documents
+## 10. Relevant Documents List
 
 | Document | Contents |
 |----------|----------|
 | [Pipeline Technical Brief](docs/pipeline_technical_brief.md) | Architecture, IAM setup, OAuth, build steps, constraints |
-| [Revenue Insights](docs/revenue_insights.md) | Full analysis with SQL queries and output tables |
+| [Revenue Insights](docs/revenue_insights_with_sql_code.md) | Full analysis with SQL queries and output tables |
 | [Data Quality Findings](docs/data_quality_findings.md) | Full audit, affected records, action checklist |
 
 ### Query Library (Includes query outputs as /**/ in sql file)
@@ -273,7 +269,7 @@ These questions are answerable with additional connectors following the same pip
 | Revenue by region | [queries/revenue_by_region.sql](queries/sqlite_revenue_by_region.sql) |
 | Data quality audit | [queries/data_quality_flags.sql](queries/sqlite_data_quality.sql) |
 
-[**Data Studio Dashboard Directly Connected to Big Query**](https://github.com/SandyGCabanes/Xero-Fivetran-BigQuery-Pipeline/blob/main/assets/Dashboard_Xero_Demo_Company_(BQ_connection).pdf)
+[**Data Studio Dashboard Directly Connected to Big Query**](assets/Dashboard_Xero_Demo_Company_(BQ_connection).pdf)
 
 > *Note: Google renamed Looker Studio back to Data Studio 
 in April 2026. Both names refer to the same product. 
