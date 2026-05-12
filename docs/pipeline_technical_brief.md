@@ -1,4 +1,4 @@
-# Xero → Fivetran → BigQuery Pipeline
+# Xero - Fivetran - BigQuery - Data Studio Pipeline
 ## Technical Brief for Decision Makers
 **Prepared by:** Sandy G. Cabanes  
 **Date:** May 11, 2026
@@ -19,7 +19,7 @@ LAYER 2 — Transformation (automatic)
 BigQuery raw tables ──► dbt models ──► clean reporting tables
 
 LAYER 3 — Analysis
-BigQuery reporting tables ──► SQL / Tableau / Looker Studio
+BigQuery reporting tables ──► SQL / Tableau / Data Studio (Looker Studio)
 ```
 
 The pipeline runs on a schedule. Once set up, it requires
