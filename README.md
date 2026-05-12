@@ -16,8 +16,7 @@ The pipeline runs automatically, requires no ongoing maintenance for
 routine operations, and costs $0/month at typical small business
 data volumes.
 
-The first sync took 50 seconds. The first audit query found a 62%
-data quality gap and $12,375 in revenue that was unclassified in
+The first sync took just a few minutes. After the first audit query, we found a 62% data quality gap and $12,375 in revenue that was unclassified in
 any service-level report — invisible in Xero's UI, visible
 immediately in SQL.
 
@@ -53,11 +52,11 @@ immediately in SQL.
 
 ## 1. Problem
 
-Xero is designed for accounting. It handles invoicing, reconciliation, and financial reporting well. What it is not designed for is open-ended analysis across all your records at once. 
+Xero is designed for accounting. It handles invoicing, reconciliation, and financial reporting well. What it is not designed for is aggregated analysis across all your records at once. 
 
-Questions that matter to a growing business — which clients drive the most revenue, which services are most profitable, whether regional performance is improving — require data from across multiple invoices, clients, and time periods simultaneously.
+Questions like  — which clients drive the most revenue, which services are most profitable, whether regional performance is improving — require data from across multiple invoices, clients, and time periods simultaneously.
 
-The standard workaround is manual: export CSVs from Xero, consolidate in a spreadsheet, and rebuild the analysis each reporting period. The process is time-consuming, and error-prone.
+The common workaround is manual: export CSVs from Xero, consolidate in a spreadsheet, and rebuild the analysis each reporting period. The process is time-consuming, and error-prone.
 
 There is a second, less visible problem: Xero does not flag its own data quality gaps. Missing service codes and unassigned region tags appear as blank fields in individual invoices — easy to miss in the UI, impossible to quantify without querying across all records at once. By the time a business notices, months of revenue have been misclassified.
 
