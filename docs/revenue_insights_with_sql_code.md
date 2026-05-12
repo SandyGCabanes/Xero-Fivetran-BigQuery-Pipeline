@@ -16,22 +16,30 @@ GROUP BY contact_name
 ORDER BY total_revenue DESC
 ```
 
-| Client | Revenue | % of Total |
-|--------|---------|------------|
-| Ridgeway University | $12,375 | 33% |
-| Truxton Property Management | $5,906 | 16% |
-| Hoyt Productions | $5,500 | 15% |
-| SMART Agency | $4,500 | 12% |
-| PC Complete | $4,024 | 11% |
-| 25 other clients | $5,138 | 14% |
+| Client | Revenue | % of Revenue |
+|--------|---------|--------------|
+| Ridgeway University | $12,375 | 47.3% |
+| Hamilton Smith Ltd | $2,050 | 7.8% |
+| Rex Media Group | $1,550 | 5.9% |
+| Boom FM | $1,500 | 5.7% |
+| Petrie McLoud Watson & Associates | $1,300 | 5.0% |
+| Bank West | $1,200 | 4.6% |
+| City Limousines | $1,120 | 4.3% |
+| Young Bros Transport | $1,000 | 3.8% |
+| Port & Philip Freight | $1,000 | 3.8% |
+| DIISR - Small Business Services | $995 | 3.8% |
+| Basket Case | $915 | 3.5% |
+| City Agency | $548 | 2.1% |
+| Marine Systems | $396 | 1.5% |
+| Bayside Club | $224 | 0.9% |
 
-**What this means:** The top 3 clients generate 59% of revenue.
+**What this means:** The top 3 clients generate 61% of revenue.
 If Ridgeway University does not renew, one third of revenue
-disappears. The 25 clients at the bottom collectively generate
+disappears. The other clients at the bottom collectively generate
 less than the single largest client.
 
 **What to do:** Protect top relationships actively. Focus growth
-efforts on mid-tier clients (rank 6-15) who already trust the
+efforts on mid-tier clients (rank 4-7) who already trust the
 business before acquiring new clients.
 
 ---
@@ -58,8 +66,8 @@ ORDER BY total_revenue DESC
 | CRM Project Management | $12,375 | Project |
 | Monthly IT Support | $5,600 | Recurring |
 | MS Office Training | $2,700 | Periodic |
-| Development | $2,420 | Project |
-| Branding / PM | $1,925 | Project |
+| Development | $1,950 | Project |
+| Branding / PM | $1,400| Project |
 
 **What this means:** CRM projects generate the highest revenue
 per engagement but are treated as ad hoc work — no standard
