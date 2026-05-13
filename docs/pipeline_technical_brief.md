@@ -141,6 +141,7 @@ Plan required          :  Free ($0/month)
 Connection minimum fee :  $0 on Free plan
 
 Note: Fivetran Free plan covers most small businesses comfortably.
+The dbt layer 'Quickstart' is free at max 5,000 successful runs per month.
 A paid plan ($120/month+) is only needed if you
 connect 2+ high-volume sources simultaneously
 or require sub-hourly sync frequency.
